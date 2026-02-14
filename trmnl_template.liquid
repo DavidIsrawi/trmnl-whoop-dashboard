@@ -1,0 +1,35 @@
+<div class="view">
+  <div class="header">
+    <div class="title">Whoop Daily Summary</div>
+    <div class="value">{{ last_updated | date: "%b %d, %H:%M" }}</div>
+  </div>
+  
+  <div class="content">
+    <div class="grid grid--cols-2">
+      <div class="item">
+        <div class="label">Recovery</div>
+        <div class="value">{{ recovery_score }}%</div>
+      </div>
+      <div class="item">
+        <div class="label">Strain</div>
+        <div class="value">{{ strain | round: 1 }}</div>
+      </div>
+      <div class="item">
+        <div class="label">HRV</div>
+        <div class="value">{{ hrv | round: 0 }} ms</div>
+      </div>
+      <div class="item">
+        <div class="label">RHR</div>
+        <div class="value">{{ resting_heart_rate }} bpm</div>
+      </div>
+      <div class="item">
+        <div class="label">Sleep</div>
+        <div class="value">{{ sleep_performance }}%</div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="footer">
+    <div class="meta">TRMNL Whoop Plugin</div>
+  </div>
+</div>
