@@ -46,6 +46,8 @@ async function runPlugin() {
       spo2: recovery?.score?.spo2_percentage,
       skin_temp: recovery?.score?.skin_temp_celsius,
       sleep_performance: sleep?.score?.sleep_performance_percentage,
+      respiratory_rate: sleep?.score?.respiratory_rate,
+      vo2_max: null, // Not available in public API v2 yet
       strain: cycle?.score?.strain,
       weekly_strain_avg: weeklyStrainAvg,
       kilojoules: cycle?.score?.kilojoule,

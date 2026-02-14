@@ -21,6 +21,7 @@ export interface WhoopSleep {
   score: {
     sleep_performance_percentage: number;
     sleep_efficiency_percentage?: number;
+    respiratory_rate?: number;
   };
 }
 

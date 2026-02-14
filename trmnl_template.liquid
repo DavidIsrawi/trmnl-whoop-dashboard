@@ -1,35 +1,60 @@
 <div class="view">
   <div class="header">
     <div class="title">Whoop Daily Summary</div>
-    <div class="value">{{ last_updated | date: "%b %d, %H:%M" }}</div>
+    <div class="value">{{ last_updated | date: "%b %d, %Y" }}</div>
   </div>
   
   <div class="content">
     <div class="grid grid--cols-2">
       <div class="item">
         <div class="label">Recovery</div>
-        <div class="value">{{ recovery_score }}%</div>
-      </div>
-      <div class="item">
-        <div class="label">Strain</div>
-        <div class="value">{{ strain | round: 1 }}</div>
-      </div>
-      <div class="item">
-        <div class="label">HRV</div>
-        <div class="value">{{ hrv | round: 0 }} ms</div>
-      </div>
-      <div class="item">
-        <div class="label">RHR</div>
-        <div class="value">{{ resting_heart_rate }} bpm</div>
+        <div class="value value--large">{{ recovery_score }}%</div>
       </div>
       <div class="item">
         <div class="label">Sleep</div>
-        <div class="value">{{ sleep_performance }}%</div>
+        <div class="value value--large">{{ sleep_performance }}%</div>
+      </div>
+      <div class="item">
+        <div class="label">HRV</div>
+        <div class="value">{{ hrv | round: 0 }} <span class="unit">ms</span></div>
+      </div>
+      <div class="item">
+        <div class="label">RHR</div>
+        <div class="value">{{ resting_heart_rate }} <span class="unit">bpm</span></div>
+      </div>
+      <div class="item">
+        <div class="label">Respiratory</div>
+        <div class="value">{{ respiratory_rate | round: 1 }} <span class="unit">rpm</span></div>
+      </div>
+      <div class="item">
+        <div class="label">VO2 Max</div>
+        <div class="value">{{ vo2_max | default: '--' }}</div>
       </div>
     </div>
   </div>
   
   <div class="footer">
-    <div class="meta">TRMNL Whoop Plugin</div>
+    <div class="meta">TRMNL Whoop Plugin | {{ last_updated | date: "%H:%M" }}</div>
   </div>
 </div>
+
+<style>
+  .value--large {
+    font-size: 1.5em;
+    font-weight: bold;
+  }
+  .unit {
+    font-size: 0.6em;
+    color: #666;
+    margin-left: 2px;
+  }
+  .item {
+    padding: 10px 0;
+  }
+  .label {
+    text-transform: uppercase;
+    font-size: 0.7em;
+    letter-spacing: 1px;
+    color: #444;
+  }
+</style>
