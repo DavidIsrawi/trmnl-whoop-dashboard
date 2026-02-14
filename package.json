@@ -9,6 +9,7 @@
     "start": "tsx src/index.ts",
     "auth": "tsx src/auth.ts",
     "serve": "node dist/index.js",
+    "preview": "tsx preview.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -22,6 +23,7 @@
     "@types/dotenv": "^6.1.1",
     "@types/node": "^25.2.3",
     "@types/qs": "^6.14.0",
+    "liquidjs": "^10.24.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   },
