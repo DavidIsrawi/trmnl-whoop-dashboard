@@ -1,56 +1,85 @@
-# TRMNL Whoop Plugin
+# TRMNL Whoop Plugin 🚀
 
-This "middleman" script fetches your latest Whoop data and pushes it to your TRMNL device via a Private Plugin Webhook.
+A lightweight integration that brings your latest **Whoop** recovery, sleep, and strain data directly to your **TRMNL** e-ink display.
 
-## Setup Instructions
+![Whoop](https://img.shields.io/badge/Whoop-v2%20API-blue)
+![TRMNL](https://img.shields.io/badge/TRMNL-Webhook-green)
+![Node.js](https://img.shields.io/badge/Node.js-18+-brightgreen)
+
+## ✨ Features
+
+- **Recovery Tracking:** Monitor your Recovery Score, HRV, RHR, SpO2, and Skin Temperature.
+- **Sleep Insights:** Track your sleep performance percentage.
+- **Strain Analysis:** View your daily strain and weekly strain average.
+- **Energy Expenditure:** Monitor kilojoules (calories) burned.
+- **Auto-Refreshing:** Automatically refreshes Whoop OAuth tokens and persists them locally.
+- **Periodic Updates:** Configurable polling interval to keep your device updated.
+
+## 📊 Data Points
+
+The following data is pushed to your TRMNL device:
+
+| Metric | Key | Description |
+| :--- | :--- | :--- |
+| **Recovery** | `recovery_score` | Your daily recovery percentage (0-100) |
+| **HRV** | `hrv` | Heart Rate Variability (ms) |
+| **RHR** | `resting_heart_rate` | Resting Heart Rate (bpm) |
+| **Sleep** | `sleep_performance` | Sleep performance percentage |
+| **Strain** | `strain` | Daily physical strain (0-21) |
+| **Strain Avg** | `weekly_strain_avg` | Average strain over the last 7 days |
+| **SpO2** | `spo2` | Blood oxygen levels (%) |
+| **Skin Temp** | `skin_temp` | Skin temperature (Celsius) |
+| **Energy** | `kilojoules` | Energy expended in KJ |
+
+## 🚀 Setup Instructions
 
 ### 1. Whoop Developer Setup
-1. Go to [Whoop Developer Dashboard](https://developer.whoop.com/).
+1. Visit the [Whoop Developer Dashboard](https://developer.whoop.com/).
 2. Create a new App.
-3. Note your **Client ID** and **Client Secret**.
-4. Set your Redirect URI (e.g., `http://localhost:3000` for local setup).
-5. Obtain an initial **Refresh Token**. You can use a tool like Postman or a simple OAuth flow to get this. Whoop requires the `offline` scope to provide a refresh token.
+3. Save your **Client ID** and **Client Secret**.
+4. Set a Redirect URI (e.g., `http://localhost:3000`).
+5. Obtain an initial **Refresh Token** (ensure the `offline` scope is included).
 
 ### 2. TRMNL Setup
 1. Log in to your [TRMNL Dashboard](https://usetrmnl.com/).
-2. Go to **Plugins** -> **Private Plugins**.
+2. Navigate to **Plugins** -> **Private Plugins**.
 3. Create a new plugin using the **Webhook** strategy.
-4. Copy the **Webhook URL**.
-5. In the **Liquid Template** section, paste the contents of `trmnl_template.liquid`.
+4. Copy your unique **Webhook URL**.
+5. Copy the code from `trmnl_template.liquid` into the **Liquid Template** section of your plugin.
 
-### 3. Middleman Setup
-1. Clone this repository.
-2. Run `npm install`.
-3. Copy `.env.example` to `.env` and fill in your credentials.
+### 3. Installation & Configuration
+1. Clone this repository:
+   ```bash
+   git clone https://github.com/YOUR_USERNAME/trmnl-whoop-plugin.git
+   cd trmnl-whoop-plugin
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Configure your environment:
    ```bash
    cp .env.example .env
    ```
-4. Run the script manually to test:
-   ```bash
-   npx ts-node src/index.ts
-   ```
-5. **Important:** Every time the script runs, Whoop may issue a *new* refresh token. In a production environment (like Cloudflare Workers or a Cron job), you must persist this new refresh token so the next run can use it.
+4. Fill in the `.env` file with your credentials:
+   - `WHOOP_CLIENT_ID`
+   - `WHOOP_CLIENT_SECRET`
+   - `WHOOP_REFRESH_TOKEN`
+   - `TRMNL_WEBHOOK_URL`
+   - `REFRESH_INTERVAL_MINUTES` (Default: 15)
 
-## Deployment Options
-
-### GitHub Actions (Cron)
-You can set up a GitHub Action to run this script on a schedule. You'll need to handle the refresh token persistence (e.g., by updating a GitHub Secret or using a database).
-
-### Cloudflare Workers
-This script can be easily adapted to a Cloudflare Worker using `wrangler`. You can use Cloudflare KV to store the `WHOOP_REFRESH_TOKEN`.
-
-### Local / Raspberry Pi
-Run it as a cron job on a local server.
-
-## Data Payload
-The script sends the following simplified JSON to TRMNL:
-```json
-{
-  "recovery_score": 85,
-  "resting_heart_rate": 52,
-  "hrv": 65,
-  "sleep_performance": 90,
-  "strain": 12.5,
-  "last_updated": "2023-10-27T10:00:00Z"
-}
+### 4. Running the Plugin
+Start the polling service:
+```bash
+npm start
 ```
+*Note: The script will automatically update the `WHOOP_REFRESH_TOKEN` in your `.env` file when it refreshes.*
+
+## 🛠 Deployment Options
+
+- **Local:** Use `pm2` or a systemd service to keep the process running.
+- **Raspberry Pi:** Perfect for a low-power home server.
+- **Docker:** (Coming soon)
+
+## 📄 License
+MIT
