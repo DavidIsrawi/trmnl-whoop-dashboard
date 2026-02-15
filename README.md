@@ -41,7 +41,7 @@ The following data is pushed to your TRMNL device:
 1. Visit the [Whoop Developer Dashboard](https://developer.whoop.com/).
 2. Create a new App.
 3. Save your **Client ID** and **Client Secret**.
-4. Set a Redirect URI (e.g., `http://localhost:3000`).
+4. Set a Redirect URI (e.g., `http://localhost:3000` for local, or `https://<app-name>.azurewebsites.net/auth/callback` for Azure).
 5. Obtain an initial **Refresh Token** (ensure the `offline` scope is included).
 
 ### 2. TRMNL Setup
@@ -81,9 +81,22 @@ npm start
 
 ## 🛠 Deployment Options
 
-- **Local:** Use `pm2` or a systemd service to keep the process running.
-- **Raspberry Pi:** Perfect for a low-power home server.
-- **Docker:** (Coming soon)
+I wanted something I could set and forget, so I opted for **Azure App Service**. It's rock solid and handles the token rotation perfectly since I've connected it to persistent storage.
+
+### My Setup: Azure App Service (Recommended)
+This is the best way to ensure your Whoop credentials don't expire due to the cloud's ephemeral nature:
+
+1. **Persistent Storage:** I created a Standard Azure Storage Account and a File Share called `whoop-data`. My `.env` file lives there.
+2. **Web App:** I'm running this on a **Node 24 LTS** Linux Web App.
+3. **Configuration:**
+   - **Path Mappings:** I mounted my Azure File Share to `/data`.
+   - **App Settings:** I set `ENV_FILE_PATH` to `/data/.env`.
+   - **Always On:** I turned this **On** (Basic B1 tier) so the background timer never sleeps.
+4. **Health Checks:** I added a tiny HTTP server so Azure knows the plugin is alive and kicking.
+
+### Other Ways to Host
+- **Home Server / Raspberry Pi:** If you have a Pi or an always-on PC at home, you can just run `pm2 start dist/index.js`. It's the simplest way to keep your `.env` file safe on local disk.
+- **Docker:** I'm working on a containerized version for even easier deployment!
 
 ## 📄 License
 MIT
