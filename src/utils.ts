@@ -7,7 +7,7 @@ import path from 'path';
  * If it doesn't exist, it appends it.
  */
 export function updateEnvVariable(key: string, value: string) {
-  const envPath = path.resolve(process.cwd(), '.env');
+  const envPath = process.env.ENV_FILE_PATH || path.resolve(process.cwd(), '.env');
   
   if (!fs.existsSync(envPath)) {
     fs.writeFileSync(envPath, `${key}=${value}\n`);

@@ -1,9 +1,16 @@
 import dotenv from 'dotenv';
+import path from 'path';
 import { WhoopClient } from './whoop.js';
 import { TrmnlClient } from './trmnl.js';
 import { updateEnvVariable } from './utils.js';
 
-dotenv.config();
+// Load .env from custom path if provided (for cloud persistence)
+const envPath = process.env.ENV_FILE_PATH;
+if (envPath) {
+  dotenv.config({ path: envPath });
+} else {
+  dotenv.config();
+}
 
 async function runPlugin() {
   const {
