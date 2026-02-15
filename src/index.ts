@@ -32,11 +32,13 @@ async function runPlugin() {
     process.env.WHOOP_REFRESH_TOKEN = newRefreshToken;
 
     console.log('Fetching Whoop data...');
-    const [recovery, sleep, cycle, weeklyStrainAvg] = await Promise.all([
+    const [recovery, sleep, cycle, weeklyStrainAvg, recentCycles, recentRecoveries] = await Promise.all([
       whoop.getLatestRecovery(),
       whoop.getLatestSleep(),
       whoop.getLatestCycle(),
       whoop.getWeeklyStrainAverage(),
+      whoop.getRecentCycles(7),
+      whoop.getRecentRecoveries(7),
     ]);
 
     const payload = {
@@ -46,11 +48,14 @@ async function runPlugin() {
       spo2: recovery?.score?.spo2_percentage,
       skin_temp: recovery?.score?.skin_temp_celsius,
       sleep_performance: sleep?.score?.sleep_performance_percentage,
+      sleep_efficiency: sleep?.score?.sleep_efficiency_percentage,
       respiratory_rate: sleep?.score?.respiratory_rate,
       vo2_max: null, // Not available in public API v2 yet
       strain: cycle?.score?.strain,
       weekly_strain_avg: weeklyStrainAvg,
       kilojoules: cycle?.score?.kilojoule,
+      recent_strains: recentCycles.map(c => c.score.strain).reverse(),
+      recent_recoveries: recentRecoveries.map(r => r.score.recovery_score).reverse(),
       last_updated: new Date().toISOString(),
     };
 

@@ -34,65 +34,297 @@
         </head>
         <body>
           <div class="trmnl-screen">
-            <div class="view">
+            <div class="view whoop-dashboard">
   <div class="header">
-    <div class="title">Whoop Daily Summary</div>
-    <div class="value">Feb 14, 2026</div>
+    <div class="brand">
+      <span class="logo">WHOOP</span>
+      <span class="status-indicator"></span>
+    </div>
+    <div class="time-box">
+      <div class="date">Saturday, Feb 14</div>
+      <div class="sync">SYNC: 12:28</div>
+    </div>
   </div>
-  
-  <div class="content">
-    <div class="grid grid--cols-2">
-      <div class="item">
-        <div class="label">Recovery</div>
-        <div class="value value--large">85%</div>
+
+  <div class="main-grid">
+    <!-- Recovery Card -->
+    <div class="card recovery-card">
+      <div class="card-label">RECOVERY</div>
+      <div class="card-main">
+        <div class="large-value">85<span class="pct">%</span></div>
+        <div class="history-bars">
+          
+            <div class="bar-wrapper">
+              <div class="bar" style="height: 45%"></div>
+            </div>
+          
+            <div class="bar-wrapper">
+              <div class="bar" style="height: 62%"></div>
+            </div>
+          
+            <div class="bar-wrapper">
+              <div class="bar" style="height: 88%"></div>
+            </div>
+          
+            <div class="bar-wrapper">
+              <div class="bar" style="height: 32%"></div>
+            </div>
+          
+            <div class="bar-wrapper">
+              <div class="bar" style="height: 55%"></div>
+            </div>
+          
+            <div class="bar-wrapper">
+              <div class="bar" style="height: 76%"></div>
+            </div>
+          
+            <div class="bar-wrapper">
+              <div class="bar" style="height: 85%"></div>
+            </div>
+          
+        </div>
       </div>
-      <div class="item">
-        <div class="label">Sleep</div>
-        <div class="value value--large">92%</div>
+      <div class="card-footer-metrics">
+        <div class="mini-metric">
+          <span class="m-label">HRV</span>
+          <span class="m-value">72<span class="u">ms</span></span>
+        </div>
+        <div class="mini-metric">
+          <span class="m-label">RHR</span>
+          <span class="m-value">54<span class="u">bpm</span></span>
+        </div>
       </div>
-      <div class="item">
-        <div class="label">HRV</div>
-        <div class="value">72 <span class="unit">ms</span></div>
+    </div>
+
+    <!-- Strain Card -->
+    <div class="card strain-card">
+      <div class="card-label">STRAIN</div>
+      <div class="card-main">
+        <div class="large-value">12.4</div>
+        <div class="history-bars">
+          
+            <div class="bar-wrapper">
+              <div class="bar" style="height: 39.032%"></div>
+            </div>
+          
+            <div class="bar-wrapper">
+              <div class="bar" style="height: 59.5%"></div>
+            </div>
+          
+            <div class="bar-wrapper">
+              <div class="bar" style="height: 71.87599999999999%"></div>
+            </div>
+          
+            <div class="bar-wrapper">
+              <div class="bar" style="height: 44.744%"></div>
+            </div>
+          
+            <div class="bar-wrapper">
+              <div class="bar" style="height: 53.312%"></div>
+            </div>
+          
+            <div class="bar-wrapper">
+              <div class="bar" style="height: 70.448%"></div>
+            </div>
+          
+            <div class="bar-wrapper">
+              <div class="bar" style="height: 59.024%"></div>
+            </div>
+          
+        </div>
       </div>
-      <div class="item">
-        <div class="label">RHR</div>
-        <div class="value">54 <span class="unit">bpm</span></div>
+      <div class="card-footer-metrics">
+        <div class="mini-metric">
+          <span class="m-label">WEEKLY AVG</span>
+          <span class="m-value">10.8</span>
+        </div>
+        <div class="mini-metric">
+          <span class="m-label">CALORIES</span>
+          <span class="m-value">2032</span>
+        </div>
       </div>
-      <div class="item">
-        <div class="label">Respiratory</div>
-        <div class="value">14.5 <span class="unit">rpm</span></div>
+    </div>
+
+    <!-- Sleep Card -->
+    <div class="card sleep-card">
+      <div class="card-label">SLEEP</div>
+      <div class="card-main">
+        <div class="large-value">92<span class="pct">%</span></div>
+        <div class="sleep-quality-bar">
+          <div class="progress-fill" style="width: 92%"></div>
+        </div>
       </div>
-      <div class="item">
-        <div class="label">VO2 Max</div>
-        <div class="value">52</div>
+      <div class="card-footer-metrics">
+        <div class="mini-metric">
+          <span class="m-label">EFFICIENCY</span>
+          <span class="m-value">96%</span>
+        </div>
+        <div class="mini-metric">
+          <span class="m-label">RESPIRATORY</span>
+          <span class="m-value">14.5<span class="u">rpm</span></span>
+        </div>
       </div>
     </div>
   </div>
-  
-  <div class="footer">
-    <div class="meta">TRMNL Whoop Plugin | 12:21</div>
+
+  <div class="bottom-bar">
+    <div class="vital-item">
+      <span class="v-label">SpO2</span>
+      <span class="v-value">98%</span>
+    </div>
+    <div class="v-divider"></div>
+    <div class="vital-item">
+      <span class="v-label">SKIN TEMP</span>
+      <span class="v-value">36.5°C</span>
+    </div>
+    <div class="v-divider"></div>
+    <div class="vital-item">
+      <span class="v-label">VO2 MAX</span>
+      <span class="v-value">52</span>
+    </div>
   </div>
 </div>
 
 <style>
-  .value--large {
-    font-size: 1.5em;
-    font-weight: bold;
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 0; }
+  .whoop-dashboard {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    color: #000;
   }
-  .unit {
-    font-size: 0.6em;
-    color: #666;
-    margin-left: 2px;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    border-bottom: 2px solid #000;
   }
-  .item {
-    padding: 10px 0;
+
+  .logo {
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: -1.5px;
   }
-  .label {
-    text-transform: uppercase;
-    font-size: 0.7em;
-    letter-spacing: 1px;
-    color: #444;
+
+  .time-box { text-align: right; }
+  .date { font-size: 16px; font-weight: 700; }
+  .sync { font-size: 9px; color: #666; letter-spacing: 0.5px; }
+
+  .main-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    flex-grow: 1;
   }
+
+  .card {
+    padding: 15px;
+    border-right: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card:last-child { border-right: none; }
+
+  .card-label {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    border-bottom: 1px solid #000;
+    padding-bottom: 4px;
+    margin-bottom: 10px;
+  }
+
+  .card-main {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .large-value {
+    font-size: 56px;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 10px;
+  }
+
+  .pct { font-size: 20px; font-weight: 600; margin-left: 2px; }
+
+  .history-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 30px;
+    width: 80%;
+    margin-top: 5px;
+  }
+
+  .bar-wrapper {
+    flex: 1;
+    height: 100%;
+    background: #f0f0f0;
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .bar {
+    width: 100%;
+    background: #000;
+  }
+
+  .sleep-quality-bar {
+    width: 80%;
+    height: 6px;
+    background: #f0f0f0;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: #000;
+  }
+
+  .card-footer-metrics {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .mini-metric {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+  }
+
+  .m-label { color: #555; font-weight: 600; }
+  .m-value { font-weight: 800; }
+  .u { font-size: 8px; margin-left: 1px; }
+
+  .bottom-bar {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: #000;
+    color: #fff;
+    padding: 12px 0;
+  }
+
+  .vital-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .v-label { font-size: 9px; font-weight: 700; margin-bottom: 3px; opacity: 0.7; }
+  .v-value { font-size: 15px; font-weight: 800; }
+  .v-divider { width: 1px; height: 18px; background: rgba(255,255,255,0.3); }
 </style>
 
           </div>

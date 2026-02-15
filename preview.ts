@@ -10,11 +10,18 @@ const template = fs.readFileSync(templatePath, 'utf8');
 const mockData = {
   recovery_score: 85,
   sleep_performance: 92,
+  sleep_efficiency: 96,
   hrv: 72,
   resting_heart_rate: 54,
   respiratory_rate: 14.5,
   vo2_max: 52,
   strain: 12.4,
+  weekly_strain_avg: 10.8,
+  spo2: 98,
+  skin_temp: 36.5,
+  kilojoules: 8500,
+  recent_strains: [8.2, 12.5, 15.1, 9.4, 11.2, 14.8, 12.4],
+  recent_recoveries: [45, 62, 88, 32, 55, 76, 85],
   last_updated: new Date().toISOString()
 };
 

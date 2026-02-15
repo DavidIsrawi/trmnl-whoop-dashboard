@@ -93,6 +93,24 @@ export class WhoopClient {
     return response.data.records[0];
   }
 
+  async getRecentCycles(limit: number = 7): Promise<WhoopCycle[]> {
+    if (!this.accessToken) await this.refreshAccessToken();
+    const response = await axios.get('https://api.prod.whoop.com/developer/v2/cycle', {
+      headers: { Authorization: `Bearer ${this.accessToken}` },
+      params: { limit },
+    });
+    return response.data.records;
+  }
+
+  async getRecentRecoveries(limit: number = 7): Promise<WhoopRecovery[]> {
+    if (!this.accessToken) await this.refreshAccessToken();
+    const response = await axios.get('https://api.prod.whoop.com/developer/v2/recovery', {
+      headers: { Authorization: `Bearer ${this.accessToken}` },
+      params: { limit },
+    });
+    return response.data.records;
+  }
+
   async getWeeklyStrainAverage(): Promise<number | undefined> {
     if (!this.accessToken) await this.refreshAccessToken();
     const response = await axios.get('https://api.prod.whoop.com/developer/v2/cycle', {
