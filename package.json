@@ -10,7 +10,7 @@
     "auth": "tsx src/auth.ts",
     "serve": "node dist/index.js",
     "preview": "tsx src/preview.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"No tests specified yet.\""
   },
   "keywords": [],
   "author": "",
