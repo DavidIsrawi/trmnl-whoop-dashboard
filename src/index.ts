@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import path from 'path';
+import http from 'http';
 import { WhoopClient } from './whoop.js';
 import { TrmnlClient } from './trmnl.js';
 import { updateEnvVariable } from './utils.js';
@@ -11,6 +12,15 @@ if (envPath) {
 } else {
   dotenv.config();
 }
+
+// Start a minimal health check server for Azure
+const PORT = process.env.PORT || 8080;
+http.createServer((req, res) => {
+  res.writeHead(200, { 'Content-Type': 'text/plain' });
+  res.end('Whoop TRMNL Plugin is running...\n');
+}).listen(PORT, () => {
+  console.log(`Health check server listening on port ${PORT}`);
+});
 
 async function runPlugin() {
   const {
