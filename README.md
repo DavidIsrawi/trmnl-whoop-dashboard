@@ -6,6 +6,10 @@ A lightweight integration that brings your latest **Whoop** recovery, sleep, and
 ![TRMNL](https://img.shields.io/badge/TRMNL-Webhook-green)
 ![Node.js](https://img.shields.io/badge/Node.js-18+-brightgreen)
 
+## 📱 Dashboard Preview
+
+![TRMNL Whoop Dashboard](dashboard.png)
+
 ## ✨ Features
 
 - **Recovery Tracking:** Monitor your Recovery Score, HRV, RHR, SpO2, and Skin Temperature.
