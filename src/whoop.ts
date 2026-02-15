@@ -8,6 +8,7 @@ export interface WhoopTokenResponse {
 }
 
 export interface WhoopRecovery {
+  sleep_id: string;
   score: {
     recovery_score: number;
     resting_heart_rate: number;
@@ -18,6 +19,9 @@ export interface WhoopRecovery {
 }
 
 export interface WhoopSleep {
+  id: string;
+  cycle_id: number;
+  nap: boolean;
   score: {
     sleep_performance_percentage: number;
     sleep_efficiency_percentage?: number;
@@ -33,6 +37,7 @@ export interface WhoopSleep {
 }
 
 export interface WhoopCycle {
+  id: number;
   score: {
     strain: number;
     average_heart_rate: number;
@@ -89,6 +94,15 @@ export class WhoopClient {
       params: { limit: 1 },
     });
     return response.data.records[0];
+  }
+
+  async getRecentSleeps(limit: number = 5): Promise<WhoopSleep[]> {
+    if (!this.accessToken) await this.refreshAccessToken();
+    const response = await axios.get('https://api.prod.whoop.com/developer/v2/activity/sleep', {
+      headers: { Authorization: `Bearer ${this.accessToken}` },
+      params: { limit },
+    });
+    return response.data.records;
   }
 
   async getLatestCycle(): Promise<WhoopCycle | undefined> {

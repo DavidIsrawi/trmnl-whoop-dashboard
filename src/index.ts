@@ -49,25 +49,50 @@ async function runPlugin() {
     process.env.WHOOP_REFRESH_TOKEN = newRefreshToken;
 
     console.log('Fetching Whoop data...');
-    const [recovery, sleep, cycle, weeklyStrainAvg, recentCycles, recentRecoveries] = await Promise.all([
+    const [recovery, recentSleeps, cycle, weeklyStrainAvg, recentCycles, recentRecoveries] = await Promise.all([
       whoop.getLatestRecovery(),
-      whoop.getLatestSleep(),
+      whoop.getRecentSleeps(10),
       whoop.getLatestCycle(),
       whoop.getWeeklyStrainAverage(),
       whoop.getRecentCycles(7),
       whoop.getRecentRecoveries(7),
     ]);
 
-    const sleepScore = sleep?.score;
-    let sleepHours = 0;
-    let sleepMinutes = 0;
-    if (sleepScore?.stage_summary) {
-      const totalSleepMs = (sleepScore.stage_summary.total_light_sleep_time_milli || 0) + 
-                           (sleepScore.stage_summary.total_slow_wave_sleep_time_milli || 0) + 
-                           (sleepScore.stage_summary.total_rem_sleep_time_milli || 0);
-      sleepHours = Math.floor(totalSleepMs / (1000 * 60 * 60));
-      sleepMinutes = Math.floor((totalSleepMs % (1000 * 60 * 60)) / (1000 * 60));
+    const currentCycleId = cycle?.id;
+    const sleepsForCycle = recentSleeps.filter(s => s.cycle_id === currentCycleId);
+
+    let totalSleepMs = 0;
+    let sleepPerformance = 0;
+    let sleepEfficiency = 0;
+    let respiratoryRate = 0;
+
+    if (sleepsForCycle.length > 0) {
+      // Use the sleep record linked to the latest recovery as the "main" sleep
+      // Fallback to the longest sleep or first non-nap if recovery link is missing
+      const mainSleep = sleepsForCycle.find(s => s.id === recovery?.sleep_id) || 
+                        sleepsForCycle.find(s => !s.nap) || 
+                        sleepsForCycle.reduce((prev, current) => {
+                          const prevTime = (prev.score?.stage_summary?.total_in_bed_time_milli || 0);
+                          const currTime = (current.score?.stage_summary?.total_in_bed_time_milli || 0);
+                          return (prevTime > currTime) ? prev : current;
+                        });
+
+      sleepPerformance = mainSleep.score.sleep_performance_percentage;
+      sleepEfficiency = mainSleep.score.sleep_efficiency_percentage || 0;
+      respiratoryRate = mainSleep.score.respiratory_rate || 0;
+
+      // Sum up durations from ALL sleeps in this cycle (main sleep + naps)
+      sleepsForCycle.forEach(s => {
+        if (s.score?.stage_summary) {
+          totalSleepMs += (s.score.stage_summary.total_light_sleep_time_milli || 0) + 
+                           (s.score.stage_summary.total_slow_wave_sleep_time_milli || 0) + 
+                           (s.score.stage_summary.total_rem_sleep_time_milli || 0);
+        }
+      });
     }
+
+    const sleepHours = Math.floor(totalSleepMs / (1000 * 60 * 60));
+    const sleepMinutes = Math.floor((totalSleepMs % (1000 * 60 * 60)) / (1000 * 60));
 
     const formatSigFigs = (num: number | undefined | null, figs: number = 2) => {
       if (num === undefined || num === null) return null;
@@ -81,10 +106,10 @@ async function runPlugin() {
       hrv: formatSigFigs(recovery?.score?.hrv_rmssd_milli),
       spo2: formatSigFigs(recovery?.score?.spo2_percentage),
       skin_temp: formatSigFigs(recovery?.score?.skin_temp_celsius),
-      sleep_performance: sleep?.score?.sleep_performance_percentage,
-      sleep_efficiency: formatSigFigs(sleep?.score?.sleep_efficiency_percentage),
-      respiratory_rate: formatSigFigs(sleep?.score?.respiratory_rate),
-      sleep_time: sleepScore?.stage_summary ? `${sleepHours}h ${sleepMinutes}m` : '--',
+      sleep_performance: sleepPerformance || null,
+      sleep_efficiency: formatSigFigs(sleepEfficiency),
+      respiratory_rate: formatSigFigs(respiratoryRate),
+      sleep_time: totalSleepMs > 0 ? `${sleepHours}h ${sleepMinutes}m` : '--',
       strain: formatSigFigs(cycle?.score?.strain),
       weekly_strain_avg: formatSigFigs(weeklyStrainAvg),
       kilojoules: cycle?.score?.kilojoule,
