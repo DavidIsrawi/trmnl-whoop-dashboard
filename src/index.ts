@@ -41,18 +41,35 @@ async function runPlugin() {
       whoop.getRecentRecoveries(7),
     ]);
 
+    const sleepScore = sleep?.score;
+    let sleepHours = 0;
+    let sleepMinutes = 0;
+    if (sleepScore?.stage_summary) {
+      const totalSleepMs = (sleepScore.stage_summary.total_light_sleep_time_milli || 0) + 
+                           (sleepScore.stage_summary.total_slow_wave_sleep_time_milli || 0) + 
+                           (sleepScore.stage_summary.total_rem_sleep_time_milli || 0);
+      sleepHours = Math.floor(totalSleepMs / (1000 * 60 * 60));
+      sleepMinutes = Math.floor((totalSleepMs % (1000 * 60 * 60)) / (1000 * 60));
+    }
+
+    const formatSigFigs = (num: number | undefined | null, figs: number = 2) => {
+      if (num === undefined || num === null) return null;
+      // Use toPrecision to get the significant figures, then Number to clean up
+      return Number(num.toPrecision(figs));
+    };
+
     const payload = {
       recovery_score: recovery?.score?.recovery_score,
       resting_heart_rate: recovery?.score?.resting_heart_rate,
-      hrv: recovery?.score?.hrv_rmssd_milli,
-      spo2: recovery?.score?.spo2_percentage,
-      skin_temp: recovery?.score?.skin_temp_celsius,
+      hrv: formatSigFigs(recovery?.score?.hrv_rmssd_milli),
+      spo2: formatSigFigs(recovery?.score?.spo2_percentage),
+      skin_temp: formatSigFigs(recovery?.score?.skin_temp_celsius),
       sleep_performance: sleep?.score?.sleep_performance_percentage,
-      sleep_efficiency: sleep?.score?.sleep_efficiency_percentage,
-      respiratory_rate: sleep?.score?.respiratory_rate,
-      vo2_max: null, // Not available in public API v2 yet
-      strain: cycle?.score?.strain,
-      weekly_strain_avg: weeklyStrainAvg,
+      sleep_efficiency: formatSigFigs(sleep?.score?.sleep_efficiency_percentage),
+      respiratory_rate: formatSigFigs(sleep?.score?.respiratory_rate),
+      sleep_time: sleepScore?.stage_summary ? `${sleepHours}h ${sleepMinutes}m` : '--',
+      strain: formatSigFigs(cycle?.score?.strain),
+      weekly_strain_avg: formatSigFigs(weeklyStrainAvg),
       kilojoules: cycle?.score?.kilojoule,
       recent_strains: recentCycles.map(c => c.score.strain).reverse(),
       recent_recoveries: recentRecoveries.map(r => r.score.recovery_score).reverse(),

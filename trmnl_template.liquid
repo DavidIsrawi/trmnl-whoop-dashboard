@@ -6,7 +6,7 @@
     </div>
     <div class="time-box">
       <div class="date">{{ last_updated | date: "%A, %b %d" }}</div>
-      <div class="sync">SYNC: {{ last_updated | date: "%H:%M" }}</div>
+      <div class="sync">Last Sync: {{ last_updated | date: "%H:%M" }}</div>
     </div>
   </div>
 
@@ -27,7 +27,7 @@
       <div class="card-footer-metrics">
         <div class="mini-metric">
           <span class="m-label">HRV</span>
-          <span class="m-value">{{ hrv | round: 0 }}<span class="u">ms</span></span>
+          <span class="m-value">{{ hrv }}<span class="u">ms</span></span>
         </div>
         <div class="mini-metric">
           <span class="m-label">RHR</span>
@@ -77,7 +77,7 @@
         </div>
         <div class="mini-metric">
           <span class="m-label">RESPIRATORY</span>
-          <span class="m-value">{{ respiratory_rate | round: 1 }}<span class="u">rpm</span></span>
+          <span class="m-value">{{ respiratory_rate }}<span class="u">rpm</span></span>
         </div>
       </div>
     </div>
@@ -91,12 +91,12 @@
     <div class="v-divider"></div>
     <div class="vital-item">
       <span class="v-label">SKIN TEMP</span>
-      <span class="v-value">{% if skin_temp %}{{ skin_temp | round: 1 }}°C{% else %}--{% endif %}</span>
+      <span class="v-value">{% if skin_temp %}{{ skin_temp }}°C{% else %}--{% endif %}</span>
     </div>
     <div class="v-divider"></div>
     <div class="vital-item">
-      <span class="v-label">VO2 MAX</span>
-      <span class="v-value">{{ vo2_max | default: '--' }}</span>
+      <span class="v-label">TIME ASLEEP</span>
+      <span class="v-value">{{ sleep_time | default: '--' }}</span>
     </div>
   </div>
 </div>
@@ -105,53 +105,54 @@
   * { box-sizing: border-box; }
   body { margin: 0; padding: 0; }
   .whoop-dashboard {
-    height: 100%;
+    width: 800px;
+    height: 480px;
     display: flex;
     flex-direction: column;
     background: #fff;
     color: #000;
+    overflow: hidden;
   }
 
   .header {
+    height: 50px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
+    padding: 0;
+    margin: 0 15px 8px 15px;
     border-bottom: 2px solid #000;
+    flex-shrink: 0;
   }
-
-  .logo {
-    font-size: 28px;
-    font-weight: 900;
-    letter-spacing: -1.5px;
-  }
-
-  .time-box { text-align: right; }
-  .date { font-size: 16px; font-weight: 700; }
-  .sync { font-size: 9px; color: #666; letter-spacing: 0.5px; }
 
   .main-grid {
+    flex: 1;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    flex-grow: 1;
+    gap: 10px;
+    padding: 0;
+    margin: 0 15px 8px 15px;
   }
 
   .card {
-    padding: 15px;
-    border-right: 1px solid #ddd;
+    height: 100%;
+    padding: 4px 12px 8px 12px;
+    border: 1px solid #eee;
+    border-radius: 10px;
     display: flex;
     flex-direction: column;
+    background: #fafafa;
+    overflow: hidden;
   }
 
-  .card:last-child { border-right: none; }
-
   .card-label {
-    font-size: 12px;
+    font-size: 16px;
     font-weight: 800;
-    letter-spacing: 1.5px;
-    border-bottom: 1px solid #000;
-    padding-bottom: 4px;
-    margin-bottom: 10px;
+    letter-spacing: 1.2px;
+    border-bottom: 2px solid #000;
+    padding-bottom: 3px;
+    margin-bottom: 4px;
+    flex-shrink: 0;
   }
 
   .card-main {
@@ -160,76 +161,88 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
   }
 
   .large-value {
-    font-size: 56px;
+    font-size: 64px;
     font-weight: 900;
-    line-height: 1;
-    margin-bottom: 10px;
+    line-height: 0.9;
+    margin-bottom: 4px;
   }
 
-  .pct { font-size: 20px; font-weight: 600; margin-left: 2px; }
+  .pct { font-size: 18px; font-weight: 600; margin-left: 1px; }
 
   .history-bars {
     display: flex;
     align-items: flex-end;
-    gap: 3px;
+    gap: 2px;
     height: 30px;
-    width: 80%;
-    margin-top: 5px;
+    width: 90%;
+    margin-top: 4px;
+    flex-shrink: 0;
   }
 
   .bar-wrapper {
     flex: 1;
     height: 100%;
-    background: #f0f0f0;
+    background: #e0e0e0;
     display: flex;
     align-items: flex-end;
+    border-radius: 2px 2px 0 0;
+    overflow: hidden;
   }
 
   .bar {
     width: 100%;
     background: #000;
+    border-radius: 2px 2px 0 0;
   }
 
   .sleep-quality-bar {
-    width: 80%;
+    width: 90%;
     height: 6px;
     background: #f0f0f0;
     border-radius: 3px;
     overflow: hidden;
+    flex-shrink: 0;
   }
 
   .progress-fill {
     height: 100%;
     background: #000;
+    border-radius: 2px;
   }
 
   .card-footer-metrics {
-    margin-top: 15px;
+    margin-top: 6px;
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 2px;
+    flex-shrink: 0;
   }
 
   .mini-metric {
     display: flex;
     justify-content: space-between;
-    font-size: 11px;
+    font-size: 16px;
   }
 
-  .m-label { color: #555; font-weight: 600; }
-  .m-value { font-weight: 800; }
-  .u { font-size: 8px; margin-left: 1px; }
+  .m-label { color: #555; font-weight: 500; }
+  .m-value { font-weight: 700; }
+  .u { font-size: 12px; margin-left: 1px; }
 
   .bottom-bar {
+    height: 60px;
     display: flex;
     justify-content: space-around;
     align-items: center;
     background: #000;
     color: #fff;
-    padding: 12px 0;
+    padding: 0;
+    margin: 0 15px 8px 15px;
+    border-radius: 10px;
+    flex-shrink: 0;
   }
 
   .vital-item {
@@ -238,7 +251,7 @@
     align-items: center;
   }
 
-  .v-label { font-size: 9px; font-weight: 700; margin-bottom: 3px; opacity: 0.7; }
-  .v-value { font-size: 15px; font-weight: 800; }
-  .v-divider { width: 1px; height: 18px; background: rgba(255,255,255,0.3); }
+  .v-label { font-size: 16px; font-weight: 500; margin-bottom: 1px; opacity: 0.7; }
+  .v-value { font-size: 16px; font-weight: 700; }
+  .v-divider { width: 1px; height: 16px; background: rgba(255,255,255,0.3); }
 </style>

@@ -9,7 +9,7 @@
     "start": "tsx src/index.ts",
     "auth": "tsx src/auth.ts",
     "serve": "node dist/index.js",
-    "preview": "tsx preview.ts",
+    "preview": "tsx src/preview.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

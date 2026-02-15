@@ -4,3 +4,4 @@ dist
 *.log
 playwright-cli/
 .playwright-cli/
+GEMINI.md

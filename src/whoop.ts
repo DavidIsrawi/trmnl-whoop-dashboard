@@ -22,6 +22,13 @@ export interface WhoopSleep {
     sleep_performance_percentage: number;
     sleep_efficiency_percentage?: number;
     respiratory_rate?: number;
+    stage_summary?: {
+      total_in_bed_time_milli?: number;
+      total_awake_time_milli?: number;
+      total_light_sleep_time_milli?: number;
+      total_slow_wave_sleep_time_milli?: number;
+      total_rem_sleep_time_milli?: number;
+    };
   };
 }
 
