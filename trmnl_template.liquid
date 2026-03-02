@@ -1,257 +1,366 @@
-<div class="view whoop-dashboard">
-  <div class="header">
-    <div class="brand">
-      <span class="logo">WHOOP</span>
-      <span class="status-indicator"></span>
-    </div>
-    <div class="time-box">
-      <div class="date">{{ last_updated | date: "%A, %b %d" }}</div>
-      <div class="sync">Last Sync: {{ last_updated | date: "%H:%M" }}</div>
-    </div>
-  </div>
-
-  <div class="main-grid">
-    <!-- Recovery Card -->
-    <div class="card recovery-card">
-      <div class="card-label">RECOVERY</div>
-      <div class="card-main">
-        <div class="large-value">{{ recovery_score }}<span class="pct">%</span></div>
-        <div class="history-bars">
-          {% for score in recent_recoveries %}
-            <div class="bar-wrapper">
-              <div class="bar" style="height: {{ score }}%"></div>
-            </div>
-          {% endfor %}
-        </div>
-      </div>
-      <div class="card-footer-metrics">
-        <div class="mini-metric">
-          <span class="m-label">HRV</span>
-          <span class="m-value">{{ hrv }}<span class="u">ms</span></span>
-        </div>
-        <div class="mini-metric">
-          <span class="m-label">RHR</span>
-          <span class="m-value">{{ resting_heart_rate }}<span class="u">bpm</span></span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Strain Card -->
-    <div class="card strain-card">
-      <div class="card-label">STRAIN</div>
-      <div class="card-main">
-        <div class="large-value">{{ strain | default: '0.0' }}</div>
-        <div class="history-bars">
-          {% for s in recent_strains %}
-            <div class="bar-wrapper">
-              <div class="bar" style="height: {{ s | times: 4.76 }}%"></div>
-            </div>
-          {% endfor %}
-        </div>
-      </div>
-      <div class="card-footer-metrics">
-        <div class="mini-metric">
-          <span class="m-label">WEEKLY AVG</span>
-          <span class="m-value">{{ weekly_strain_avg | default: '0.0' }}</span>
-        </div>
-        <div class="mini-metric">
-          <span class="m-label">CALORIES</span>
-          <span class="m-value">{{ kilojoules | divided_by: 4.184 | round: 0 | default: '0' }}</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Sleep Card -->
-    <div class="card sleep-card">
-      <div class="card-label">SLEEP</div>
-      <div class="card-main">
-        <div class="large-value">{{ sleep_performance }}<span class="pct">%</span></div>
-        <div class="sleep-quality-bar">
-          <div class="progress-fill" style="width: {{ sleep_performance }}%"></div>
-        </div>
-      </div>
-      <div class="card-footer-metrics">
-        <div class="mini-metric">
-          <span class="m-label">EFFICIENCY</span>
-          <span class="m-value">{{ sleep_efficiency | default: '--' }}%</span>
-        </div>
-        <div class="mini-metric">
-          <span class="m-label">RESPIRATORY</span>
-          <span class="m-value">{{ respiratory_rate }}<span class="u">rpm</span></span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="bottom-bar">
-    <div class="vital-item">
-      <span class="v-label">SpO2</span>
-      <span class="v-value">{{ spo2 | default: '--' }}%</span>
-    </div>
-    <div class="v-divider"></div>
-    <div class="vital-item">
-      <span class="v-label">SKIN TEMP</span>
-      <span class="v-value">{% if skin_temp %}{{ skin_temp }}°C{% else %}--{% endif %}</span>
-    </div>
-    <div class="v-divider"></div>
-    <div class="vital-item">
-      <span class="v-label">TIME ASLEEP</span>
-      <span class="v-value">{{ sleep_time | default: '--' }}</span>
-    </div>
-  </div>
-</div>
-
 <style>
-  * { box-sizing: border-box; }
-  body { margin: 0; padding: 0; }
-  .whoop-dashboard {
-    width: 800px;
-    height: 480px;
-    display: flex;
-    flex-direction: column;
-    background: #fff;
-    color: #000;
-    overflow: hidden;
-  }
+    :root {
+        --bg-color: #ffffff;
+        --text-color: #000000;
+        --border-color: #000000;
+        --gray-100: #f3f3f3;
+        --gray-200: #e5e5e5;
+        --gray-800: #1a1a1a;
+    }
 
-  .header {
-    height: 50px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0;
-    margin: 0 15px 8px 15px;
-    border-bottom: 2px solid #000;
-    flex-shrink: 0;
-  }
+    .whoop-dashboard {
+        width: 780px;
+        height: 460px;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        padding: 10px 13px 13px 10px;
+        filter: grayscale(100%);
+        box-sizing: border-box;
+        position: relative;
+        -webkit-font-smoothing: antialiased;
+    }
 
-  .main-grid {
-    flex: 1;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 10px;
-    padding: 0;
-    margin: 0 15px 8px 15px;
-  }
+    .whoop-dashboard *, .whoop-dashboard *::before, .whoop-dashboard *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
 
-  .card {
-    height: 100%;
-    padding: 4px 12px 8px 12px;
-    border: 1px solid #eee;
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    background: #fafafa;
-    overflow: hidden;
-  }
+    /* --- UTILS --- */
+    .whoop-dashboard .card {
+        border: 3px solid var(--border-color);
+        border-radius: 20px;
+        padding: 14px 16px;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        background: white;
+        box-shadow: 3px 3px 0px rgba(0,0,0,1);
+    }
 
-  .card-label {
-    font-size: 16px;
-    font-weight: 800;
-    letter-spacing: 1.2px;
-    border-bottom: 2px solid #000;
-    padding-bottom: 3px;
-    margin-bottom: 4px;
-    flex-shrink: 0;
-  }
+    .whoop-dashboard .whoop-label {
+        font-size: 14px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
 
-  .card-main {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-  }
+    .whoop-dashboard .label-icon {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        background: black;
+        border-radius: 2px;
+    }
 
-  .large-value {
-    font-size: 64px;
-    font-weight: 900;
-    line-height: 0.9;
-    margin-bottom: 4px;
-  }
+    /* --- HEADER --- */
+    .whoop-dashboard .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        flex-shrink: 0;
+        padding: 0 4px;
+    }
 
-  .pct { font-size: 18px; font-weight: 600; margin-left: 1px; }
+    .whoop-dashboard .brand {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
 
-  .history-bars {
-    display: flex;
-    align-items: flex-end;
-    gap: 2px;
-    height: 30px;
-    width: 90%;
-    margin-top: 4px;
-    flex-shrink: 0;
-  }
+    .whoop-dashboard .logo {
+        font-size: 22px;
+        font-weight: 900;
+        letter-spacing: 3px;
+    }
 
-  .bar-wrapper {
-    flex: 1;
-    height: 100%;
-    background: #e0e0e0;
-    display: flex;
-    align-items: flex-end;
-    border-radius: 2px 2px 0 0;
-    overflow: hidden;
-  }
+    .whoop-dashboard .time-box {
+        text-align: right;
+    }
 
-  .bar {
-    width: 100%;
-    background: #000;
-    border-radius: 2px 2px 0 0;
-  }
+    .whoop-dashboard .date {
+        font-size: 14px;
+        font-weight: 700;
+    }
 
-  .sleep-quality-bar {
-    width: 90%;
-    height: 6px;
-    background: #f0f0f0;
-    border-radius: 3px;
-    overflow: hidden;
-    flex-shrink: 0;
-  }
+    .whoop-dashboard .sync {
+        font-size: 11px;
+        font-weight: 600;
+        color: #888;
+    }
 
-  .progress-fill {
-    height: 100%;
-    background: #000;
-    border-radius: 2px;
-  }
+    /* --- MAIN GRID --- */
+    .whoop-dashboard .main-grid {
+        flex: 1;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 10px;
+        min-height: 0;
+    }
 
-  .card-footer-metrics {
-    margin-top: 6px;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    flex-shrink: 0;
-  }
+    /* --- CARDS --- */
+    .whoop-dashboard .card-main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+    }
 
-  .mini-metric {
-    display: flex;
-    justify-content: space-between;
-    font-size: 16px;
-  }
+    .whoop-dashboard .large-value {
+        font-size: 58px;
+        font-weight: 900;
+        line-height: 0.9;
+        margin-bottom: 6px;
+    }
 
-  .m-label { color: #555; font-weight: 500; }
-  .m-value { font-weight: 700; }
-  .u { font-size: 12px; margin-left: 1px; }
+    .whoop-dashboard .pct {
+        font-size: 18px;
+        font-weight: 700;
+        margin-left: 1px;
+    }
 
-  .bottom-bar {
-    height: 60px;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    background: #000;
-    color: #fff;
-    padding: 0;
-    margin: 0 15px 8px 15px;
-    border-radius: 10px;
-    flex-shrink: 0;
-  }
+    /* History Bars */
+    .whoop-dashboard .history-bars {
+        display: flex;
+        align-items: flex-end;
+        gap: 3px;
+        height: 28px;
+        width: 90%;
+        margin-top: 6px;
+        flex-shrink: 0;
+    }
 
-  .vital-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+    .whoop-dashboard .bar-wrapper {
+        flex: 1;
+        height: 100%;
+        background: var(--gray-200);
+        display: flex;
+        align-items: flex-end;
+        border-radius: 3px 3px 0 0;
+        overflow: hidden;
+    }
 
-  .v-label { font-size: 16px; font-weight: 500; margin-bottom: 1px; opacity: 0.7; }
-  .v-value { font-size: 16px; font-weight: 700; }
-  .v-divider { width: 1px; height: 16px; background: rgba(255,255,255,0.3); }
+    .whoop-dashboard .bar {
+        width: 100%;
+        background: var(--text-color);
+        border-radius: 3px 3px 0 0;
+    }
+
+    /* Sleep Bar */
+    .whoop-dashboard .sleep-quality-bar {
+        width: 90%;
+        height: 8px;
+        background: var(--gray-200);
+        border-radius: 4px;
+        overflow: hidden;
+        flex-shrink: 0;
+        margin-top: 6px;
+    }
+
+    .whoop-dashboard .progress-fill {
+        height: 100%;
+        background: var(--text-color);
+        border-radius: 4px;
+    }
+
+    /* Footer Metrics */
+    .whoop-dashboard .card-footer-metrics {
+        margin-top: 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        flex-shrink: 0;
+        border-top: 2px solid var(--gray-200);
+        padding-top: 8px;
+    }
+
+    .whoop-dashboard .mini-metric {
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+    }
+
+    .whoop-dashboard .m-label {
+        font-weight: 700;
+        color: #666;
+    }
+
+    .whoop-dashboard .m-value {
+        font-weight: 800;
+    }
+
+    .whoop-dashboard .u {
+        font-size: 10px;
+        margin-left: 1px;
+        font-weight: 600;
+    }
+
+    /* --- BOTTOM BAR --- */
+    .whoop-dashboard .bottom-bar {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        background: black;
+        color: white;
+        padding: 12px 0;
+        border-radius: 20px;
+        flex-shrink: 0;
+        border: 3px solid var(--border-color);
+        box-shadow: 3px 3px 0px rgba(0,0,0,1);
+    }
+
+    .whoop-dashboard .vital-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .whoop-dashboard .v-label {
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        margin-bottom: 2px;
+        opacity: 0.7;
+    }
+
+    .whoop-dashboard .v-value {
+        font-size: 18px;
+        font-weight: 900;
+    }
+
+    .whoop-dashboard .v-divider {
+        width: 1px;
+        height: 20px;
+        background: rgba(255,255,255,0.25);
+    }
+
+    /* --- TEXTURE OVERLAY --- */
+    .whoop-dashboard .texture-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: radial-gradient(#000 1.5px, transparent 0);
+        background-size: 5px 5px;
+        opacity: 0.05;
+        pointer-events: none;
+        z-index: 10;
+    }
 </style>
+
+<div class="view whoop-dashboard">
+    <div class="texture-overlay"></div>
+
+    <div class="header">
+        <div class="brand">
+            <span class="logo">WHOOP</span>
+        </div>
+        <div class="time-box">
+            <div class="date">{{ last_updated | date: "%A, %b %d" }}</div>
+            <div class="sync">Last Sync: {{ last_updated | date: "%H:%M" }}</div>
+        </div>
+    </div>
+
+    <div class="main-grid">
+        <!-- Recovery Card -->
+        <div class="card recovery-card">
+            <div class="whoop-label"><span class="label-icon"></span>Recovery</div>
+            <div class="card-main">
+                <div class="large-value">{{ recovery_score }}<span class="pct">%</span></div>
+                <div class="history-bars">
+                    {% for score in recent_recoveries %}
+                    <div class="bar-wrapper">
+                        <div class="bar" style="height: {{ score }}%"></div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="card-footer-metrics">
+                <div class="mini-metric">
+                    <span class="m-label">HRV</span>
+                    <span class="m-value">{{ hrv }}<span class="u">ms</span></span>
+                </div>
+                <div class="mini-metric">
+                    <span class="m-label">RHR</span>
+                    <span class="m-value">{{ resting_heart_rate }}<span class="u">bpm</span></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Strain Card -->
+        <div class="card strain-card">
+            <div class="whoop-label"><span class="label-icon"></span>Strain</div>
+            <div class="card-main">
+                <div class="large-value">{{ strain | default: '0.0' }}</div>
+                <div class="history-bars">
+                    {% for s in recent_strains %}
+                    <div class="bar-wrapper">
+                        <div class="bar" style="height: {{ s | times: 4.76 }}%"></div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="card-footer-metrics">
+                <div class="mini-metric">
+                    <span class="m-label">WEEKLY AVG</span>
+                    <span class="m-value">{{ weekly_strain_avg | default: '0.0' }}</span>
+                </div>
+                <div class="mini-metric">
+                    <span class="m-label">CALORIES</span>
+                    <span class="m-value">{{ kilojoules | divided_by: 4.184 | round: 0 | default: '0' }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sleep Card -->
+        <div class="card sleep-card">
+            <div class="whoop-label"><span class="label-icon"></span>Sleep</div>
+            <div class="card-main">
+                <div class="large-value">{{ sleep_performance }}<span class="pct">%</span></div>
+                <div class="sleep-quality-bar">
+                    <div class="progress-fill" style="width: {{ sleep_performance }}%"></div>
+                </div>
+            </div>
+            <div class="card-footer-metrics">
+                <div class="mini-metric">
+                    <span class="m-label">EFFICIENCY</span>
+                    <span class="m-value">{{ sleep_efficiency | default: '--' }}%</span>
+                </div>
+                <div class="mini-metric">
+                    <span class="m-label">RESPIRATORY</span>
+                    <span class="m-value">{{ respiratory_rate }}<span class="u">rpm</span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-bar">
+        <div class="vital-item">
+            <span class="v-label">SpO2</span>
+            <span class="v-value">{{ spo2 | default: '--' }}%</span>
+        </div>
+        <div class="v-divider"></div>
+        <div class="vital-item">
+            <span class="v-label">Skin Temp</span>
+            <span class="v-value">{% if skin_temp %}{{ skin_temp }}°C{% else %}--{% endif %}</span>
+        </div>
+        <div class="v-divider"></div>
+        <div class="vital-item">
+            <span class="v-label">Time Asleep</span>
+            <span class="v-value">{{ sleep_time | default: '--' }}</span>
+        </div>
+    </div>
+</div>
