@@ -50,6 +50,12 @@ engine
             overflow: hidden;
             background: #ffffff;
         }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
     </style>
 </head>
 <body>
