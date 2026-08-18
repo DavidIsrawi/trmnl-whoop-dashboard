@@ -100,21 +100,69 @@ async function runPlugin() {
       return Number(num.toPrecision(figs));
     };
 
+    const recoveryScore = recovery?.score?.recovery_score;
+    const strainScore = formatSigFigs(cycle?.score?.strain);
+    const recentStrainScores = recentCycles.map(c => c.score.strain).reverse();
+    const recentRecoveryScores = recentRecoveries.map(r => r.score.recovery_score).reverse();
+    const recoveryAverage = recentRecoveryScores.length > 0
+      ? recentRecoveryScores.reduce((sum, score) => sum + score, 0) / recentRecoveryScores.length
+      : null;
+    const recoveryDelta = recoveryScore !== undefined && recoveryAverage !== null
+      ? Math.round(recoveryScore - recoveryAverage)
+      : null;
+    const strainDelta = strainScore !== null && weeklyStrainAvg !== null && weeklyStrainAvg !== undefined
+      ? Number((strainScore - weeklyStrainAvg).toFixed(1))
+      : null;
+    const recoveryStatus = recoveryScore === undefined
+      ? null
+      : recoveryScore >= 67
+        ? 'High recovery'
+        : recoveryScore >= 34
+          ? 'Moderate recovery'
+          : 'Low recovery';
+    const recoveryGuidance = recoveryScore === undefined
+      ? null
+      : recoveryScore >= 67
+        ? 'Ready for strain'
+        : recoveryScore >= 34
+          ? 'Keep it balanced'
+          : 'Prioritize recovery';
+    const strainStatus = strainDelta === null
+      ? null
+      : strainDelta > 1
+        ? 'Above 7-day avg'
+        : strainDelta < -1
+          ? 'Below 7-day avg'
+          : 'Near 7-day avg';
+    const sleepStatus = sleepPerformance === 0
+      ? null
+      : sleepPerformance >= 85
+        ? 'Well rested'
+        : sleepPerformance >= 70
+          ? 'Solid sleep'
+          : 'Needs attention';
+
     const payload = {
-      recovery_score: recovery?.score?.recovery_score,
+      recovery_score: recoveryScore,
+      recovery_status: recoveryStatus,
+      recovery_guidance: recoveryGuidance,
+      recovery_delta: recoveryDelta,
       resting_heart_rate: recovery?.score?.resting_heart_rate,
       hrv: formatSigFigs(recovery?.score?.hrv_rmssd_milli),
       spo2: formatSigFigs(recovery?.score?.spo2_percentage),
       skin_temp: formatSigFigs(recovery?.score?.skin_temp_celsius),
       sleep_performance: sleepPerformance || null,
+      sleep_status: sleepStatus,
       sleep_efficiency: formatSigFigs(sleepEfficiency),
       respiratory_rate: formatSigFigs(respiratoryRate),
       sleep_time: totalSleepMs > 0 ? `${sleepHours}h ${sleepMinutes}m` : '--',
-      strain: formatSigFigs(cycle?.score?.strain),
+      strain: strainScore,
+      strain_status: strainStatus,
+      strain_delta: strainDelta,
       weekly_strain_avg: formatSigFigs(weeklyStrainAvg),
       kilojoules: cycle?.score?.kilojoule,
-      recent_strains: recentCycles.map(c => c.score.strain).reverse(),
-      recent_recoveries: recentRecoveries.map(r => r.score.recovery_score).reverse(),
+      recent_strains: recentStrainScores,
+      recent_recoveries: recentRecoveryScores,
       last_updated: new Date().toISOString(),
     };
 

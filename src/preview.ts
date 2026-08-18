@@ -9,7 +9,11 @@ const template = fs.readFileSync(templatePath, 'utf8');
 // Mock data matching the payload sent to TRMNL
 const mockData = {
   recovery_score: 85,
+  recovery_status: 'High recovery',
+  recovery_guidance: 'Ready for strain',
+  recovery_delta: 8,
   sleep_performance: 92,
+  sleep_status: 'Well rested',
   sleep_efficiency: 96,
   hrv: 72,
   resting_heart_rate: 54,
@@ -17,6 +21,8 @@ const mockData = {
   sleep_time: '7h 15m',
   vo2_max: 52,
   strain: 12.4,
+  strain_status: 'Above 7-day avg',
+  strain_delta: 1.6,
   weekly_strain_avg: 10.8,
   spo2: 98,
   skin_temp: 36.5,
@@ -36,20 +42,22 @@ engine
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TRMNL Whoop Dashboard Preview</title>
     <style>
-        html, body { margin: 0; padding: 0; background: #ffffff; }
+        html, body {
+            width: 800px;
+            height: 480px;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #ffffff;
+        }
     </style>
 </head>
 <body>
 ${html}
-<style>
-    /* Preview overrides: placed after template styles to win the cascade */
-    .whoop-dashboard { overflow: visible !important; height: auto !important; min-height: 460px; }
-    .whoop-dashboard .main-grid { flex: 1 1 260px !important; }
-</style>
 </body>
 </html>
 `;
-    fs.writeFileSync('preview.html', wrappedHtml);
+    fs.writeFileSync('preview.html', wrappedHtml.replace(/[ \t]+$/gm, ''));
     console.log('Preview generated: preview.html');
     console.log('Open preview.html in your browser to see the result.');
   })

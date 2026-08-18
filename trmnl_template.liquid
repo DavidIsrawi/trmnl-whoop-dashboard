@@ -1,366 +1,507 @@
 <style>
     :root {
-        --bg-color: #ffffff;
-        --text-color: #000000;
-        --border-color: #000000;
-        --gray-100: #f3f3f3;
-        --gray-200: #e5e5e5;
-        --gray-800: #1a1a1a;
+        --ink: #000000;
+        --paper: #ffffff;
+        --muted: #555555;
+        --line: #b8b8b8;
+        --track: #dedede;
     }
 
     .whoop-dashboard {
-        width: 780px;
-        height: 460px;
-        background-color: var(--bg-color);
-        color: var(--text-color);
-        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        width: 800px;
+        height: 480px;
+        padding: 12px;
         overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        padding: 10px 13px 13px 10px;
-        filter: grayscale(100%);
+        display: grid;
+        grid-template-rows: 36px 324px 80px;
+        gap: 8px;
         box-sizing: border-box;
-        position: relative;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: Arial, Helvetica, sans-serif;
+        font-variant-numeric: tabular-nums;
         -webkit-font-smoothing: antialiased;
     }
 
-    .whoop-dashboard *, .whoop-dashboard *::before, .whoop-dashboard *::after {
+    .whoop-dashboard *,
+    .whoop-dashboard *::before,
+    .whoop-dashboard *::after {
         box-sizing: border-box;
+        min-width: 0;
         margin: 0;
         padding: 0;
     }
 
-    /* --- UTILS --- */
-    .whoop-dashboard .card {
-        border: 3px solid var(--border-color);
-        border-radius: 20px;
-        padding: 14px 16px;
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        background: white;
-        box-shadow: 3px 3px 0px rgba(0,0,0,1);
+    .whoop-dashboard .truncate {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
-    .whoop-dashboard .whoop-label {
-        font-size: 14px;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        margin-bottom: 8px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .whoop-dashboard .label-icon {
-        display: inline-block;
-        width: 10px;
-        height: 10px;
-        background: black;
-        border-radius: 2px;
-    }
-
-    /* --- HEADER --- */
     .whoop-dashboard .header {
         display: flex;
+        align-items: center;
         justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
-        flex-shrink: 0;
         padding: 0 4px;
-    }
-
-    .whoop-dashboard .brand {
-        display: flex;
-        align-items: center;
-        gap: 8px;
+        overflow: hidden;
     }
 
     .whoop-dashboard .logo {
+        flex: 0 0 auto;
         font-size: 22px;
         font-weight: 900;
-        letter-spacing: 3px;
+        line-height: 24px;
+        letter-spacing: 4px;
     }
 
-    .whoop-dashboard .time-box {
+    .whoop-dashboard .sync-meta {
+        max-width: 360px;
+        font-size: 12px;
+        font-weight: 800;
+        line-height: 16px;
+        letter-spacing: 0.4px;
         text-align: right;
+        text-transform: uppercase;
     }
 
-    .whoop-dashboard .date {
-        font-size: 14px;
-        font-weight: 700;
-    }
-
-    .whoop-dashboard .sync {
-        font-size: 11px;
-        font-weight: 600;
-        color: #888;
-    }
-
-    /* --- MAIN GRID --- */
     .whoop-dashboard .main-grid {
-        flex: 1;
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        gap: 10px;
-        margin-bottom: 10px;
-        min-height: 0;
+        grid-template-columns: 488px 276px;
+        gap: 12px;
+        overflow: hidden;
     }
 
-    /* --- CARDS --- */
-    .whoop-dashboard .card-main {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
+    .whoop-dashboard .card {
+        overflow: hidden;
+        border: 2px solid var(--ink);
+        border-radius: 14px;
+        background: var(--paper);
+    }
+
+    .whoop-dashboard .section-label {
+        overflow: hidden;
+        font-size: 13px;
+        font-weight: 900;
+        line-height: 16px;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .whoop-dashboard .recovery-card {
+        display: grid;
+        grid-template-rows: 16px 126px 1fr;
+        padding: 18px 20px;
+    }
+
+    .whoop-dashboard .recovery-summary {
+        display: grid;
+        grid-template-columns: 210px 1fr;
+        gap: 18px;
         align-items: center;
         overflow: hidden;
     }
 
-    .whoop-dashboard .large-value {
-        font-size: 58px;
-        font-weight: 900;
-        line-height: 0.9;
-        margin-bottom: 6px;
-    }
-
-    .whoop-dashboard .pct {
-        font-size: 18px;
-        font-weight: 700;
-        margin-left: 1px;
-    }
-
-    /* History Bars */
-    .whoop-dashboard .history-bars {
-        display: flex;
-        align-items: flex-end;
-        gap: 3px;
-        height: 28px;
-        width: 90%;
-        margin-top: 6px;
-        flex-shrink: 0;
-    }
-
-    .whoop-dashboard .bar-wrapper {
-        flex: 1;
-        height: 100%;
-        background: var(--gray-200);
-        display: flex;
-        align-items: flex-end;
-        border-radius: 3px 3px 0 0;
+    .whoop-dashboard .hero-value,
+    .whoop-dashboard .support-value {
         overflow: hidden;
+        font-weight: 900;
+        letter-spacing: -0.04em;
+        white-space: nowrap;
+    }
+
+    .whoop-dashboard .hero-value {
+        font-size: 84px;
+        line-height: 86px;
+    }
+
+    .whoop-dashboard .hero-value .unit {
+        margin-left: 2px;
+        font-size: 24px;
+        letter-spacing: -0.02em;
+    }
+
+    .whoop-dashboard .recovery-copy {
+        position: relative;
+        display: flex;
+        min-height: 82px;
+        flex-direction: column;
+        justify-content: center;
+        gap: 5px;
+        padding-left: 18px;
+        overflow: hidden;
+    }
+
+    .whoop-dashboard .recovery-copy::before {
+        position: absolute;
+        top: 4px;
+        bottom: 4px;
+        left: 0;
+        width: 1px;
+        background: var(--ink);
+        content: "";
+    }
+
+    .whoop-dashboard .recovery-status {
+        font-size: 18px;
+        font-weight: 900;
+        line-height: 22px;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+    }
+
+    .whoop-dashboard .recovery-guidance {
+        font-size: 15px;
+        font-weight: 800;
+        line-height: 18px;
+    }
+
+    .whoop-dashboard .comparison {
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 800;
+        line-height: 16px;
+        text-transform: uppercase;
+    }
+
+    .whoop-dashboard .trend {
+        display: grid;
+        grid-template-rows: 18px 70px;
+        gap: 8px;
+        padding-top: 12px;
+        overflow: hidden;
+        border-top: 1px solid var(--line);
+    }
+
+    .whoop-dashboard .trend-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        overflow: hidden;
+        font-size: 12px;
+        font-weight: 900;
+        line-height: 16px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+
+    .whoop-dashboard .trend-heading .muted {
+        color: var(--muted);
+    }
+
+    .whoop-dashboard .history-bars {
+        display: grid;
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(0, 1fr);
+        align-items: end;
+        gap: 8px;
+        height: 70px;
+        overflow: hidden;
+    }
+
+    .whoop-dashboard .bar-column {
+        display: grid;
+        grid-template-rows: 54px 12px;
+        gap: 4px;
+        align-items: end;
+        height: 70px;
+        overflow: hidden;
+    }
+
+    .whoop-dashboard .bar-track {
+        display: flex;
+        width: 100%;
+        height: 54px;
+        align-items: flex-end;
+        overflow: hidden;
+        background: var(--track);
     }
 
     .whoop-dashboard .bar {
         width: 100%;
-        background: var(--text-color);
-        border-radius: 3px 3px 0 0;
+        background: var(--muted);
     }
 
-    /* Sleep Bar */
-    .whoop-dashboard .sleep-quality-bar {
-        width: 90%;
-        height: 8px;
-        background: var(--gray-200);
-        border-radius: 4px;
+    .whoop-dashboard .bar-column.today .bar {
+        background: var(--ink);
+    }
+
+    .whoop-dashboard .bar-caption {
         overflow: hidden;
-        flex-shrink: 0;
-        margin-top: 6px;
+        font-size: 9px;
+        font-weight: 900;
+        line-height: 12px;
+        text-align: center;
+        text-overflow: clip;
+        text-transform: uppercase;
+        white-space: nowrap;
     }
 
-    .whoop-dashboard .progress-fill {
-        height: 100%;
-        background: var(--text-color);
-        border-radius: 4px;
+    .whoop-dashboard .support-column {
+        display: grid;
+        grid-template-rows: 156px 156px;
+        gap: 12px;
+        overflow: hidden;
     }
 
-    /* Footer Metrics */
-    .whoop-dashboard .card-footer-metrics {
-        margin-top: 8px;
+    .whoop-dashboard .support-card {
+        display: grid;
+        grid-template-rows: 16px 1fr 22px;
+        padding: 14px 16px;
+    }
+
+    .whoop-dashboard .support-main {
         display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        overflow: hidden;
+    }
+
+    .whoop-dashboard .support-value {
+        flex: 0 1 auto;
+        max-width: 132px;
+        font-size: 50px;
+        line-height: 52px;
+    }
+
+    .whoop-dashboard .support-value .unit {
+        margin-left: 1px;
+        font-size: 18px;
+        letter-spacing: -0.02em;
+    }
+
+    .whoop-dashboard .support-summary {
+        display: flex;
+        flex: 1 1 auto;
         flex-direction: column;
         gap: 4px;
-        flex-shrink: 0;
-        border-top: 2px solid var(--gray-200);
-        padding-top: 8px;
+        overflow: hidden;
+        text-align: right;
     }
 
-    .whoop-dashboard .mini-metric {
-        display: flex;
-        justify-content: space-between;
-        font-size: 13px;
+    .whoop-dashboard .support-status {
+        font-size: 12px;
+        font-weight: 900;
+        line-height: 15px;
+        text-transform: uppercase;
     }
 
-    .whoop-dashboard .m-label {
-        font-weight: 700;
-        color: #666;
-    }
-
-    .whoop-dashboard .m-value {
+    .whoop-dashboard .support-detail {
+        color: var(--muted);
+        font-size: 12px;
         font-weight: 800;
+        line-height: 15px;
     }
 
-    .whoop-dashboard .u {
-        font-size: 10px;
-        margin-left: 1px;
-        font-weight: 600;
-    }
-
-    /* --- BOTTOM BAR --- */
-    .whoop-dashboard .bottom-bar {
+    .whoop-dashboard .support-foot {
         display: flex;
-        justify-content: space-around;
-        align-items: center;
-        background: black;
-        color: white;
-        padding: 12px 0;
-        border-radius: 20px;
-        flex-shrink: 0;
-        border: 3px solid var(--border-color);
-        box-shadow: 3px 3px 0px rgba(0,0,0,1);
+        align-items: end;
+        justify-content: space-between;
+        gap: 10px;
+        overflow: hidden;
+        border-top: 1px solid var(--line);
+        font-size: 12px;
+        font-weight: 800;
+        line-height: 16px;
     }
 
-    .whoop-dashboard .vital-item {
+    .whoop-dashboard .support-foot span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .whoop-dashboard .vitals-strip {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        overflow: hidden;
+        border: 2px solid var(--ink);
+        border-radius: 14px;
+        background: var(--paper);
+    }
+
+    .whoop-dashboard .vital {
+        position: relative;
         display: flex;
         flex-direction: column;
-        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        padding: 10px 14px;
+        overflow: hidden;
     }
 
-    .whoop-dashboard .v-label {
-        font-size: 11px;
-        font-weight: 800;
-        text-transform: uppercase;
-        margin-bottom: 2px;
-        opacity: 0.7;
-    }
-
-    .whoop-dashboard .v-value {
-        font-size: 18px;
-        font-weight: 900;
-    }
-
-    .whoop-dashboard .v-divider {
-        width: 1px;
-        height: 20px;
-        background: rgba(255,255,255,0.25);
-    }
-
-    /* --- TEXTURE OVERLAY --- */
-    .whoop-dashboard .texture-overlay {
+    .whoop-dashboard .vital + .vital::before {
         position: absolute;
-        top: 0;
+        top: 12px;
+        bottom: 12px;
         left: 0;
-        width: 100%;
-        height: 100%;
-        background-image: radial-gradient(#000 1.5px, transparent 0);
-        background-size: 5px 5px;
-        opacity: 0.05;
-        pointer-events: none;
-        z-index: 10;
+        width: 1px;
+        background: var(--line);
+        content: "";
+    }
+
+    .whoop-dashboard .vital-label,
+    .whoop-dashboard .vital-value {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .whoop-dashboard .vital-label {
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 900;
+        line-height: 14px;
+        text-transform: uppercase;
+    }
+
+    .whoop-dashboard .vital-value {
+        font-size: 20px;
+        font-weight: 900;
+        line-height: 22px;
+    }
+
+    .whoop-dashboard .small-unit {
+        margin-left: 2px;
+        font-size: 12px;
+        font-weight: 800;
+    }
+
+    .whoop-dashboard .empty-value {
+        letter-spacing: 0;
     }
 </style>
 
 <div class="view whoop-dashboard">
-    <div class="texture-overlay"></div>
-
-    <div class="header">
-        <div class="brand">
-            <span class="logo">WHOOP</span>
+    <header class="header">
+        <div class="logo">WHOOP</div>
+        <div class="sync-meta truncate">
+            {{ last_updated | date: "%a, %b %d" }} &middot; Synced {{ last_updated | date: "%H:%M" }}
         </div>
-        <div class="time-box">
-            <div class="date">{{ last_updated | date: "%A, %b %d" }}</div>
-            <div class="sync">Last Sync: {{ last_updated | date: "%H:%M" }}</div>
-        </div>
-    </div>
+    </header>
 
-    <div class="main-grid">
-        <!-- Recovery Card -->
-        <div class="card recovery-card">
-            <div class="whoop-label"><span class="label-icon"></span>Recovery</div>
-            <div class="card-main">
-                <div class="large-value">{{ recovery_score }}<span class="pct">%</span></div>
+    <main class="main-grid">
+        <section class="card recovery-card">
+            <h2 class="section-label">Today's readiness</h2>
+
+            <div class="recovery-summary">
+                {% if recovery_score %}
+                <div class="hero-value">{{ recovery_score | round }}<span class="unit">%</span></div>
+                <div class="recovery-copy">
+                    <div class="recovery-status truncate">{{ recovery_status | default: "Recovery scored" }}</div>
+                    <div class="recovery-guidance truncate">{{ recovery_guidance | default: "Review today's recovery" }}</div>
+                    {% if recovery_delta %}
+                    <div class="comparison truncate">
+                        {% if recovery_delta > 0 %}+{% endif %}{{ recovery_delta }} vs 7-day avg
+                    </div>
+                    {% endif %}
+                </div>
+                {% else %}
+                <div class="hero-value empty-value">--</div>
+                <div class="recovery-copy">
+                    <div class="recovery-status truncate">Not scored yet</div>
+                    <div class="recovery-guidance truncate">Waiting for today's data</div>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="trend">
+                <div class="trend-heading">
+                    <span class="truncate">Recovery trend</span>
+                    <span class="muted truncate">7 days &rarr; today</span>
+                </div>
                 <div class="history-bars">
                     {% for score in recent_recoveries %}
-                    <div class="bar-wrapper">
-                        <div class="bar" style="height: {{ score }}%"></div>
+                    {% assign bounded_score = score | at_least: 0 | at_most: 100 %}
+                    <div class="bar-column{% if forloop.last %} today{% endif %}">
+                        <div class="bar-track">
+                            <div class="bar" style="height: {{ bounded_score }}%"></div>
+                        </div>
+                        <div class="bar-caption">{% if forloop.last %}Today{% else %}{{ forloop.index }}{% endif %}</div>
                     </div>
+                    {% else %}
+                    <div class="comparison truncate">No recovery history available</div>
                     {% endfor %}
                 </div>
             </div>
-            <div class="card-footer-metrics">
-                <div class="mini-metric">
-                    <span class="m-label">HRV</span>
-                    <span class="m-value">{{ hrv }}<span class="u">ms</span></span>
-                </div>
-                <div class="mini-metric">
-                    <span class="m-label">RHR</span>
-                    <span class="m-value">{{ resting_heart_rate }}<span class="u">bpm</span></span>
-                </div>
-            </div>
-        </div>
+        </section>
 
-        <!-- Strain Card -->
-        <div class="card strain-card">
-            <div class="whoop-label"><span class="label-icon"></span>Strain</div>
-            <div class="card-main">
-                <div class="large-value">{{ strain | default: '0.0' }}</div>
-                <div class="history-bars">
-                    {% for s in recent_strains %}
-                    <div class="bar-wrapper">
-                        <div class="bar" style="height: {{ s | times: 4.76 }}%"></div>
+        <div class="support-column">
+            <section class="card support-card">
+                <h2 class="section-label">Strain</h2>
+                <div class="support-main">
+                    {% if strain %}
+                    <div class="support-value">{{ strain }}</div>
+                    <div class="support-summary">
+                        <div class="support-status truncate">{{ strain_status | default: "Today's strain" }}</div>
+                        {% if strain_delta %}
+                        <div class="support-detail truncate">
+                            {% if strain_delta > 0 %}+{% endif %}{{ strain_delta }} vs avg
+                        </div>
+                        {% endif %}
                     </div>
-                    {% endfor %}
+                    {% else %}
+                    <div class="support-value empty-value">--</div>
+                    <div class="support-summary">
+                        <div class="support-status truncate">No strain yet</div>
+                    </div>
+                    {% endif %}
                 </div>
-            </div>
-            <div class="card-footer-metrics">
-                <div class="mini-metric">
-                    <span class="m-label">WEEKLY AVG</span>
-                    <span class="m-value">{{ weekly_strain_avg | default: '0.0' }}</span>
+                <div class="support-foot">
+                    <span>7-day avg</span>
+                    <span>{{ weekly_strain_avg | default: "--" }}</span>
                 </div>
-                <div class="mini-metric">
-                    <span class="m-label">CALORIES</span>
-                    <span class="m-value">{{ kilojoules | divided_by: 4.184 | round: 0 | default: '0' }}</span>
-                </div>
-            </div>
-        </div>
+            </section>
 
-        <!-- Sleep Card -->
-        <div class="card sleep-card">
-            <div class="whoop-label"><span class="label-icon"></span>Sleep</div>
-            <div class="card-main">
-                <div class="large-value">{{ sleep_performance }}<span class="pct">%</span></div>
-                <div class="sleep-quality-bar">
-                    <div class="progress-fill" style="width: {{ sleep_performance }}%"></div>
+            <section class="card support-card">
+                <h2 class="section-label">Sleep</h2>
+                <div class="support-main">
+                    {% if sleep_performance %}
+                    <div class="support-value">{{ sleep_performance | round }}<span class="unit">%</span></div>
+                    <div class="support-summary">
+                        <div class="support-status truncate">{{ sleep_status | default: "Sleep scored" }}</div>
+                        <div class="support-detail truncate">{{ sleep_time | default: "--" }} asleep</div>
+                    </div>
+                    {% else %}
+                    <div class="support-value empty-value">--</div>
+                    <div class="support-summary">
+                        <div class="support-status truncate">Not scored yet</div>
+                        <div class="support-detail truncate">Waiting for sleep data</div>
+                    </div>
+                    {% endif %}
                 </div>
-            </div>
-            <div class="card-footer-metrics">
-                <div class="mini-metric">
-                    <span class="m-label">EFFICIENCY</span>
-                    <span class="m-value">{{ sleep_efficiency | default: '--' }}%</span>
+                <div class="support-foot">
+                    <span>Efficiency</span>
+                    <span>{% if sleep_efficiency %}{{ sleep_efficiency }}%{% else %}--{% endif %}</span>
                 </div>
-                <div class="mini-metric">
-                    <span class="m-label">RESPIRATORY</span>
-                    <span class="m-value">{{ respiratory_rate }}<span class="u">rpm</span></span>
-                </div>
-            </div>
+            </section>
         </div>
-    </div>
+    </main>
 
-    <div class="bottom-bar">
-        <div class="vital-item">
-            <span class="v-label">SpO2</span>
-            <span class="v-value">{{ spo2 | default: '--' }}%</span>
+    <footer class="vitals-strip">
+        <div class="vital">
+            <span class="vital-label">HRV</span>
+            <span class="vital-value">{% if hrv %}{{ hrv }}<span class="small-unit">ms</span>{% else %}--{% endif %}</span>
         </div>
-        <div class="v-divider"></div>
-        <div class="vital-item">
-            <span class="v-label">Skin Temp</span>
-            <span class="v-value">{% if skin_temp %}{{ skin_temp }}°C{% else %}--{% endif %}</span>
+        <div class="vital">
+            <span class="vital-label">Resting HR</span>
+            <span class="vital-value">{% if resting_heart_rate %}{{ resting_heart_rate }}<span class="small-unit">bpm</span>{% else %}--{% endif %}</span>
         </div>
-        <div class="v-divider"></div>
-        <div class="vital-item">
-            <span class="v-label">Time Asleep</span>
-            <span class="v-value">{{ sleep_time | default: '--' }}</span>
+        <div class="vital">
+            <span class="vital-label">SpO&#8322;</span>
+            <span class="vital-value">{% if spo2 %}{{ spo2 }}<span class="small-unit">%</span>{% else %}--{% endif %}</span>
         </div>
-    </div>
+        <div class="vital">
+            <span class="vital-label">Skin temp</span>
+            <span class="vital-value">{% if skin_temp %}{{ skin_temp }}<span class="small-unit">&deg;C</span>{% else %}--{% endif %}</span>
+        </div>
+        <div class="vital">
+            <span class="vital-label">Resp. rate</span>
+            <span class="vital-value">{% if respiratory_rate %}{{ respiratory_rate }}<span class="small-unit">/min</span>{% else %}--{% endif %}</span>
+        </div>
+    </footer>
 </div>

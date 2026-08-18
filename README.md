@@ -12,6 +12,7 @@ A lightweight integration that brings your latest **Whoop** recovery, sleep, and
 
 ## ✨ Features
 
+- **Decision-First Readiness:** See Recovery first, with a plain-language status, daily guidance, and comparison to the 7-day average.
 - **Recovery Tracking:** Monitor your Recovery Score, HRV, RHR, SpO2, and Skin Temperature.
 - **Sleep Insights:** Track your sleep performance percentage.
 - **Strain Analysis:** View your daily strain and weekly strain average.
@@ -26,11 +27,16 @@ The following data is pushed to your TRMNL device:
 | Metric | Key | Description |
 | :--- | :--- | :--- |
 | **Recovery** | `recovery_score` | Your daily recovery percentage (0-100) |
+| **Recovery Status** | `recovery_status` | Plain-language recovery band |
+| **Recovery Guidance** | `recovery_guidance` | Short readiness guidance for the day |
+| **Recovery Delta** | `recovery_delta` | Difference from the 7-day recovery average |
 | **HRV** | `hrv` | Heart Rate Variability (ms) |
 | **RHR** | `resting_heart_rate` | Resting Heart Rate (bpm) |
 | **Sleep** | `sleep_performance` | Sleep performance percentage |
 | **Strain** | `strain` | Daily physical strain (0-21) |
 | **Strain Avg** | `weekly_strain_avg` | Average strain over the last 7 days |
+| **Strain Status** | `strain_status` | Today's strain relative to the 7-day average |
+| **Strain Delta** | `strain_delta` | Difference from the 7-day strain average |
 | **SpO2** | `spo2` | Blood oxygen levels (%) |
 | **Skin Temp** | `skin_temp` | Skin temperature (Celsius) |
 | **Energy** | `kilojoules` | Energy expended in KJ |
