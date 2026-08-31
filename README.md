@@ -34,6 +34,7 @@ The following data is pushed to your TRMNL device:
 | **SpO2** | `spo2` | Blood oxygen levels (%) |
 | **Skin Temp** | `skin_temp` | Skin temperature (Celsius) |
 | **Energy** | `kilojoules` | Energy expended in KJ |
+| **Last Updated** | `last_updated` | UTC sync timestamp, displayed in the TRMNL user's local time |
 
 ## 🚀 Setup Instructions
 
@@ -50,6 +51,7 @@ The following data is pushed to your TRMNL device:
 3. Create a new plugin using the **Webhook** strategy.
 4. Copy your unique **Webhook URL**.
 5. Copy the code from `trmnl_template.liquid` into the **Liquid Template** section of your plugin.
+6. Confirm your TRMNL account's time zone is correct; the dashboard uses it to localize the sync timestamp.
 
 ### 3. Installation & Configuration
 1. Clone this repository:

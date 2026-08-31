@@ -2,7 +2,10 @@ import { Liquid } from 'liquidjs';
 import fs from 'fs';
 import path from 'path';
 
-const engine = new Liquid();
+const localUtcOffsetSeconds = -new Date().getTimezoneOffset() * 60;
+process.env.TZ = 'UTC';
+
+const engine = new Liquid({ timezoneOffset: 0 });
 const templatePath = path.join(process.cwd(), 'trmnl_template.liquid');
 const template = fs.readFileSync(templatePath, 'utf8');
 
@@ -23,7 +26,12 @@ const mockData = {
   kilojoules: 8500,
   recent_strains: [8.2, 12.5, 15.1, 9.4, 11.2, 14.8, 12.4],
   recent_recoveries: [45, 62, 88, 32, 55, 76, 85],
-  last_updated: new Date().toISOString()
+  last_updated: new Date().toISOString(),
+  trmnl: {
+    user: {
+      utc_offset: localUtcOffsetSeconds
+    }
+  }
 };
 
 engine

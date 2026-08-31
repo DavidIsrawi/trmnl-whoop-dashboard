@@ -261,6 +261,7 @@
     }
 </style>
 
+{% assign local_updated = last_updated | date: "%s" | plus: trmnl.user.utc_offset %}
 <div class="view whoop-dashboard">
     <div class="texture-overlay"></div>
 
@@ -269,8 +270,8 @@
             <span class="logo">WHOOP</span>
         </div>
         <div class="time-box">
-            <div class="date">{{ last_updated | date: "%A, %b %d" }}</div>
-            <div class="sync">Last Sync: {{ last_updated | date: "%H:%M" }}</div>
+            <div class="date">{{ local_updated | date: "%A, %b %d" }}</div>
+            <div class="sync">Last Sync: {{ local_updated | date: "%H:%M" }}</div>
         </div>
     </div>
 
